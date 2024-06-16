@@ -1,7 +1,7 @@
 import { number } from "zod";
 
 const mongoose=require("mongoose");
-mongoose.connect('mongodb+srv://admin:Harliv_1003@cluster0.58gzul4.mongodb.net/')
+mongoose.connect('')
 const user=mongoose.Schema({
     username:String,
     password:String,
