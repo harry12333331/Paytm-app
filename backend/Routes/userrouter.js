@@ -35,6 +35,10 @@ router.post('/signup',async (req,res)=>{
         firstname:body.firstname
     })
     const userid=user._id
+    await Account.create({
+        userid:userid,
+        balance: 1 + Math.random() * 10000
+    })
     const token=jwt.sign({userid},JWT_secret)
     res.json({
         token:token,
@@ -42,7 +46,52 @@ router.post('/signup',async (req,res)=>{
 
     })
 })
-router.post('/signin',authmiddleware,(req,res)=>{
+const updateBody = zod.object({
+	password: zod.string().optional(),
+    firstName: zod.string().optional(),
+    lastName: zod.string().optional(),
+})
+router.put('/',authmiddleware,async(req,res)=>{
+    const { success } = updateBody.safeParse(req.body)
+    if (!success) {
+        res.status(411).json({
+            message: "Error while updating information"
+        })
+    }
+    
+    await User.updateOne({ _id: req.userid },req.body)
+    res.json({
+        message:"update success"
+    })
+
+    
+})
+router.get("/bulk",async (req,res)=>{
+    const filter= req.query.filter || "";
+    const users = await User.find({
+        $or: [{
+            firstName: {
+                "$regex": filter
+            }
+        }, {
+            lastName: {
+                "$regex": filter
+            }
+        }]
+    })
+    res.json({
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
+    })
+})
+router.post('/signin',authmiddleware,async(req,res)=>{
+
+
+
     
     
 })
