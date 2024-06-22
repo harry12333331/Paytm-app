@@ -2,7 +2,8 @@ const express=require('express')
 const router=express.Router();
 const zod =require('zod');
 const { User,Account } = require('../db');
-const {JWT_secret }= require('../config');
+const JWT_secret = require('../config');
+const jwt=require("jsonwebtoken")
 const { authmiddleware } = require('../middlewares');
 const signupSchema=zod.object({
     username:zod.string(),
@@ -13,12 +14,20 @@ const signupSchema=zod.object({
 })
 router.post('/signup',async (req,res)=>{
     const body =req.body;
+    const parsed = signupSchema.safeParse(body);
+
+    /*if (!parsed.success) {
+        // If validation fails, return detailed errors
+        return res.status(400).json({
+            message: "Validation failed",
+            errors: parsed.error.issues
+        });}*/
     const {success}=signupSchema.safeParse(body)
     if(!success){
-        return res.status(411).json({
+
+        return res.status(400).json({
             message:"email already taken or wrong in puts"
-        })
-    }
+        })}
     const existinguser= await User.findOne({
         username:body.username
     })
@@ -27,7 +36,7 @@ router.post('/signup',async (req,res)=>{
             message:"User already exists"
         })
     }
-    const user = await User.createOne({
+    const user = await User.create({
         username:body.username,
         password:body.password,
         lastname:body.lastname,

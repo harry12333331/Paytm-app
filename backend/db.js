@@ -1,4 +1,3 @@
-
 const mongoose=require("mongoose");
 mongoose.connect('')
 const user=mongoose.Schema({
