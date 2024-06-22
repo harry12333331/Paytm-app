@@ -1,4 +1,3 @@
-import { number } from "zod";
 
 const mongoose=require("mongoose");
 mongoose.connect('')
@@ -26,6 +25,7 @@ const Account = mongoose.model('Account', accountSchema);
 
 module.exports = {
 	Account,User
-}
+};
+
 
 
