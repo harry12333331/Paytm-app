@@ -1,4 +1,4 @@
 export function Heading({label}){
-    return <div classname='font-normal hover:font-bold'>{label}</div>
+    return (<div className="font-bold text-4xl pt-6">{label}</div>)
 
 }
