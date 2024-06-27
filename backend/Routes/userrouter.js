@@ -1,5 +1,6 @@
 const express=require('express')
 const router=express.Router();
+const cors = require("cors")
 const zod =require('zod');
 const { User,Account } = require('../db');
 const JWT_secret = require('../config');
@@ -14,7 +15,6 @@ const signupSchema=zod.object({
 })
 router.post('/signup',async (req,res)=>{
     const body =req.body;
-    const parsed = signupSchema.safeParse(body);
 
     /*if (!parsed.success) {
         // If validation fails, return detailed errors
@@ -42,13 +42,13 @@ router.post('/signup',async (req,res)=>{
         lastname:body.lastname,
         firstname:body.firstname
     })
-    const userid=user._id
+    const userId=user._id
     await Account.create({
-        userid:userid,
+        userid:userId,
         balance: 1 + Math.random() * 10000
     })
 
-    const token=jwt.sign({userid},JWT_secret)
+    const token=jwt.sign({userId},JWT_secret)
     res.json({
         token:token,
         message:'user created successfully'
@@ -79,12 +79,15 @@ router.get("/bulk",async (req,res)=>{
     const filter= req.query.filter || "";
     const users = await User.find({
         $or: [{
-            firstName: {
-                "$regex": filter
+            firstname: {
+                $regex: filter,
+                $options:'i'
             }
         }, {
-            lastName: {
-                "$regex": filter
+            lastname: {
+
+                $regex: filter,
+                $options:'i'
             }
         }]
     })
@@ -97,4 +100,39 @@ router.get("/bulk",async (req,res)=>{
         }))
     })
 })
+
+const signinSchema = zod.object({
+    username:zod.string(),
+    password:zod.string()
+})
+
+
+router.post('/signin', async function(req,res){
+    const body = req.body;
+    const {success} = signinSchema.safeParse(body);
+
+    if(!success){
+        return res.status(411).json({
+            msg:"invalid inputs",
+        })
+    }
+    const user = await User.findOne({
+        username:body.username,
+        password:body.password
+    })
+    if(user){
+        const token = jwt.sign({
+            userId:user._id
+        },JWT_secret)
+        res.json({
+            token:token
+        })
+        return;
+        }
+    res.status(411).json({
+        msg:"Error while logging in"
+    })
+})
+
+
 module.exports=router;

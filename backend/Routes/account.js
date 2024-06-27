@@ -1,10 +1,11 @@
-const express=require("express");
+const express= require("express");
+const mongoose=require("mongoose");
 const { authmiddleware } = require("../middlewares");
 const router= express.Router();
 const { Account } = require('../db');
 module.exports=router;
 router.get("/balance",authmiddleware,async(req,res)=>{
-    const user=Account.findOne({userid:req.userid})
+    const account= await Account.findOne({userid:req.userid})
     res.json({
         balance: account.balance
     })

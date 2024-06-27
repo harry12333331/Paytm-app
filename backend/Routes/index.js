@@ -3,6 +3,6 @@ const router= express.Router();
 const userrouter= require("./userrouter")
 const accountrouter=require("./account")
 router.use("/user",userrouter)
-router.use("/accounts",accountrouter)
+router.use("/account",accountrouter)
 module.exports=router;
 

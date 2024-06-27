@@ -9,7 +9,7 @@ export function Appbar(){
             </div>
             <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mt-1 mx-4" >
                 <div className="flex flex-col justify-center h-full text-xl" >
-                    U
+                    H
                 </div>
             </div>
         </div>

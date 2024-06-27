@@ -1,13 +1,13 @@
 const mongoose=require("mongoose");
 mongoose.connect('')
-const user=mongoose.Schema({
+const userSchema=mongoose.Schema({
     username:String,
     password:String,
     firstname:String,
     lastname:String
 
 })
-const User=mongoose.model("User",user)
+const User = mongoose.model("user",userSchema)
 const accountSchema = new mongoose.Schema({
     userid: {
         type: mongoose.Schema.Types.ObjectId, // Reference to User model
@@ -20,7 +20,7 @@ const accountSchema = new mongoose.Schema({
     }
 });
 
-const Account = mongoose.model('Account', accountSchema);
+const Account = mongoose.model('account', accountSchema);
 
 module.exports = {
 	Account,User
